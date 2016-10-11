@@ -58,6 +58,7 @@ public class ServiceLocator {
             dataSource = (DataSource) envContext.lookup(dataSourceJndiName);
             
             
+            
         } catch (ClassCastException cce) {
             //TODO 5 wrap ClassCastException in ServiceLocatorException and throw
         	throw new ServiceLocatorException(cce);

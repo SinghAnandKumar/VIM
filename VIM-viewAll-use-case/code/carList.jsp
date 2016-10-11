@@ -26,8 +26,10 @@
   <table>    <tr>
       <th><a href="javascript:checkAll(document.deleteForm.id)">Select All</a></th>
       <th>Action</th>      <th>Make</th>      <th>Model</th>      <th class="model-year">Model Year</th>    </tr>        <c:forEach items='${carList}' var='car'>      <tr>
-      <td><input type="checkbox" name="id" value="<%-- Set this value to id property of car attribute --%>"></td>
-      <td><a href="controller?<%-- Set the value for 'action' parameter to 'editCar' and 'id' parameter to id property of car attribute --%>">Edit</a></td>      <td><%-- Set this value to make property of car attribute --%></td>      <td><%-- Set this value to model property of car attribute --%></td>      <td class="model-year"><%-- Set this value to modelYear property of car attribute --%></td>      </tr>    </c:forEach>
+      <td><input type="checkbox" name="id" value="${car.id}<%-- Set this value to id property of car attribute --%>"></td>
+      <td><a href="controller?action=editCar&id='${car.id}'<%-- Set the value for 'action' parameter to 'editCar' and 'id' parameter to id property of car attribute --%>">Edit</a></td>      <td>'${car.make}'<%-- Set this value to make property of car attribute --%></td>      <td>'${car.model}'<%-- Set this value to model property of car attribute --%></td>      <td class="model-year">'${car.modelYear}'<%-- Set this value to modelYear property of car attribute --%></td>      </tr>    </c:forEach>
+    
+    
     
     <tr>
       <td colspan="5">

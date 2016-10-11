@@ -85,15 +85,20 @@ public class ControllerServlet extends HttpServlet
         	request.setAttribute("carList", carList);
 			//Set the destination page to carList.jsp
 			destinationPage = "carList.jsp";
+			
+			System.out.println("in view car list");
         	
         }
         else if(ADD_CAR_ACTION.equals(actionName))
         {
 			//TODO 5 
 			//Create a new CarDTO and set in request with attribute name as 'car'
-        	request.setAttribute("car", new CarDTO());
+        	CarDTO car = new CarDTO();
+        	request.setAttribute("car", car);
 			//Set the destination page to carForm.jsp
         	destinationPage="carForm.jsp";
+        	
+        	System.out.println("in add car");
             
         }  
         else if(EDIT_CAR_ACTION.equals(actionName))
@@ -108,6 +113,7 @@ public class ControllerServlet extends HttpServlet
 			//Set the destination page to carForm.jsp
         	destinationPage="carForm.jsp";
             
+        	System.out.println("in edit car");
         }        
         else if(SAVE_CAR_ACTION.equals(actionName))
         {
@@ -119,9 +125,8 @@ public class ControllerServlet extends HttpServlet
         	id = Integer.parseInt(request.getParameter("id"));
 			//If it is a new car then invoke create api of DAO else update api
         	car = carDAO.findById(id);
-        	if(car==null){
+        	if(car==null || id<0){
         		car = new CarDTO();
-        		car.setId(id);
         		carDAO.create(car);
         	}else{
         		carDAO.update(car);
@@ -135,6 +140,8 @@ public class ControllerServlet extends HttpServlet
 			
         	//Set the destination page to carList.jsp
         	destinationPage="carList.jsp";
+        	
+        	System.out.println("in save car");
             
         }  
         else if(DELETE_CAR_ACTION.equals(actionName))
@@ -155,6 +162,7 @@ public class ControllerServlet extends HttpServlet
 			//Set the destination page to carList.jsp
         	destinationPage="carList.jsp";
             
+        	System.out.println("in delete car");
         }                    
         else
         {
