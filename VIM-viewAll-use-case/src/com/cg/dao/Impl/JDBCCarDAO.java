@@ -31,21 +31,23 @@ public class JDBCCarDAO implements CarDAO {
 	//TODO 3 Declare a local variable datasource of type DataSource follow encapsulation principle
 	
 	String dataSourceJndiName = "jdbc/VIMDataSource";
-    DataSource datasource = null;
+    DataSource dataSource = null;
 	
 	public JDBCCarDAO() {
 		//TODO 4 Initialize the dataSource in TODO 3 using ServiceLocator API
-		try {
-			datasource =(DataSource) ServiceLocator.getDataSource(dataSourceJndiName);
+		/*try {
+			//dataSource =(DataSource) ServiceLocator.getDataSource(dataSourceJndiName);
 		} catch (ServiceLocatorException e) {
 			System.out.println("Container Service not available");
-		}
-		
-		//TODO 5 If any error occur in getting this service then throw ServiceLocatorException
+		}*/
+
 		//with error message as 'Container Service not available'
 		
 	}
 
+	public void setDataSource(DataSource dataSource){
+		this.dataSource = dataSource ;
+	}
 	
 	@Override
 	/**
@@ -63,12 +65,12 @@ public class JDBCCarDAO implements CarDAO {
 		try{
 			try {
 				//TODO 6 
-				//Get a connection using datasource
+				//Get a connection using dataSource
 				//Start the JDBC transaction
 				//Create a PreparedStatement using insertQuery
 				//Set the parameters of the PreparedStatement
 				//Invoke appropriate API of JDBC to update and commit the record
-				connection = (Connection) datasource.getConnection();
+				connection = (Connection) dataSource.getConnection();
 				//connection.setAutoCommit(false);
 				insertStatement = connection.prepareStatement(insertQuery,PreparedStatement.RETURN_GENERATED_KEYS);
 				
@@ -114,20 +116,22 @@ public class JDBCCarDAO implements CarDAO {
 		try{
 			try {
 				//TODO 7 
-				//Get a connection using datasource
+				//Get a connection using dataSource
 				//Start the JDBC transaction
 				//Create a PreparedStatement using deleteQuery
 				//Set the parameters of the PreparedStatement
 				//Invoke appropriate API of JDBC to update and commit the record
-				connection = (Connection) datasource.getConnection();
+				connection = (Connection) dataSource.getConnection();
 //				connection.setAutoCommit(false);
 				deleteStatement = connection.prepareStatement(deleteQuery);
 				
 				System.out.println(ids);
 				
-				for(String id : ids){
-					deleteStatement.setInt(1, Integer.parseInt(id));
-					rows+=deleteStatement.executeUpdate();
+				if(ids!=null){
+					for(String id : ids){
+						deleteStatement.setInt(1, Integer.parseInt(id));
+						rows+=deleteStatement.executeUpdate();
+					}
 				}
 				
 				System.out.println(rows+" rows deleted");
@@ -163,12 +167,12 @@ public class JDBCCarDAO implements CarDAO {
 		try{
 			try {
 				//TODO 8 
-				//Get a connection using datasource
+				//Get a connection using dataSource
 				//Start the JDBC transaction
 				//Create a PreparedStatement using updateQuery
 				//Set the parameters of the PreparedStatement
 				//Invoke appropriate API of JDBC to update and commit the record
-				connection = (Connection) datasource.getConnection();
+				connection = (Connection) dataSource.getConnection();
 //				connection.setAutoCommit(false);
 				updateStatement = connection.prepareStatement(updateQuery);
 				
@@ -214,13 +218,13 @@ public class JDBCCarDAO implements CarDAO {
 		try{
 			try {
 				//TODO 9 
-				//Get a connection using datasource
+				//Get a connection using dataSSource
 				//Don't start the JDBC transaction
 				//Create a Statement using selectQuery
 				//Invoke appropriate API of JDBC to fire the query
 				//For iteration over the ResultSet populate carList with CarDTO 
 				
-				connection = (Connection)datasource.getConnection();
+				connection = (Connection)dataSource.getConnection();
 //				connection.setAutoCommit(false);
 				Statement selectStatement = connection.createStatement();
 				ResultSet rs;
@@ -266,7 +270,7 @@ public class JDBCCarDAO implements CarDAO {
 		
 		try{
 			try {
-				connection = datasource.getConnection();
+				connection = dataSource.getConnection();
 				connection.setAutoCommit(false);
 				PreparedStatement selectStatement = connection.prepareStatement(selectQuery);
 				

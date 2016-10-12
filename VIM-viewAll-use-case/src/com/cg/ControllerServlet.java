@@ -9,10 +9,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
 import com.cg.dao.CarDAO;
 import com.cg.dao.Impl.JDBCDaoException;
 import com.cg.dto.CarDTO;
-import com.cg.util.DBUtility;
 
 //TODO 1 Import appropriate classes
 
@@ -73,7 +75,11 @@ public class ControllerServlet extends HttpServlet
             throws ServletException, IOException, JDBCDaoException {
         String actionName = request.getParameter(ACTION_KEY);
         String destinationPage = null; 
-        CarDAO carDAO = DBUtility.getCarDAO();
+        
+//        CarDAO carDAO = DBUtility.getCarDAO();
+        
+        WebApplicationContext appContext = WebApplicationContextUtils.getRequiredWebApplicationContext(request.getServletContext());
+        CarDAO carDAO = appContext.getBean("jdbcCarDao", CarDAO.class);
         
         // perform action
         if(VIEW_CAR_LIST_ACTION.equals(actionName))
