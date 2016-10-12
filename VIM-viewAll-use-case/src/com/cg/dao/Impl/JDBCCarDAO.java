@@ -37,7 +37,6 @@ public class JDBCCarDAO implements CarDAO {
 		//TODO 4 Initialize the dataSource in TODO 3 using ServiceLocator API
 		try {
 			datasource =(DataSource) ServiceLocator.getDataSource(dataSourceJndiName);
-			
 		} catch (ServiceLocatorException e) {
 			System.out.println("Container Service not available");
 		}
@@ -70,23 +69,15 @@ public class JDBCCarDAO implements CarDAO {
 				//Set the parameters of the PreparedStatement
 				//Invoke appropriate API of JDBC to update and commit the record
 				connection = (Connection) datasource.getConnection();
-				if(connection.getAutoCommit())
-				     connection.setAutoCommit(false);
-				
-				insertStatement = connection.prepareStatement(insertQuery,Statement.RETURN_GENERATED_KEYS);
+				//connection.setAutoCommit(false);
+				insertStatement = connection.prepareStatement(insertQuery,PreparedStatement.RETURN_GENERATED_KEYS);
 				
 				insertStatement.setString(1, car.getMake());
 				insertStatement.setString(2, car.getModel());
 				insertStatement.setString(3, car.getModelYear());
 				
 				rows = insertStatement.executeUpdate();
-				
-				ResultSet rs = insertStatement.getGeneratedKeys();
-				if(rs!=null && rs.next()){
-					System.out.println("Generated key = "+rs.getInt(1));
-				}
-				
-				connection.commit();
+				//connection.commit();
 				
 				System.out.println(rows+" rows inserted");
 				
@@ -104,7 +95,6 @@ public class JDBCCarDAO implements CarDAO {
 			}
 		}
 		catch(SQLException e){
-			e.printStackTrace();
 			throw new JDBCDaoException("SQL error while excecuting this query: "+ insertQuery,e);
 		}
 		
@@ -130,16 +120,14 @@ public class JDBCCarDAO implements CarDAO {
 				//Set the parameters of the PreparedStatement
 				//Invoke appropriate API of JDBC to update and commit the record
 				connection = (Connection) datasource.getConnection();
-				if(connection.getAutoCommit())
-				     connection.setAutoCommit(false);
-				
+//				connection.setAutoCommit(false);
 				deleteStatement = connection.prepareStatement(deleteQuery);
 				
-				if(ids!=null){
-					for(String id : ids){
-						deleteStatement.setString(1, id);
-						rows+=deleteStatement.executeUpdate();
-					}
+				System.out.println(ids);
+				
+				for(String id : ids){
+					deleteStatement.setInt(1, Integer.parseInt(id));
+					rows+=deleteStatement.executeUpdate();
 				}
 				
 				System.out.println(rows+" rows deleted");
@@ -181,9 +169,7 @@ public class JDBCCarDAO implements CarDAO {
 				//Set the parameters of the PreparedStatement
 				//Invoke appropriate API of JDBC to update and commit the record
 				connection = (Connection) datasource.getConnection();
-				if(connection.getAutoCommit())
-				     connection.setAutoCommit(false);
-				
+//				connection.setAutoCommit(false);
 				updateStatement = connection.prepareStatement(updateQuery);
 				
 				updateStatement.setString(1, car.getMake());
@@ -191,10 +177,8 @@ public class JDBCCarDAO implements CarDAO {
 				updateStatement.setString(3, car.getModelYear());
 				
 				updateStatement.setInt(4, car.getId());
-				
 				rows = updateStatement.executeUpdate();
-				connection.commit();
-				
+//				connection.commit();
 				System.out.println(rows+" rows updated");
 				
 			} 
@@ -237,9 +221,7 @@ public class JDBCCarDAO implements CarDAO {
 				//For iteration over the ResultSet populate carList with CarDTO 
 				
 				connection = (Connection)datasource.getConnection();
-				if(connection.getAutoCommit())
-				     connection.setAutoCommit(false);
-				
+//				connection.setAutoCommit(false);
 				Statement selectStatement = connection.createStatement();
 				ResultSet rs;
 				
@@ -248,10 +230,11 @@ public class JDBCCarDAO implements CarDAO {
 				while(rs.next()){
 					CarDTO car = new CarDTO();
 					
-					car.setId(rs.getInt(1));
-					car.setMake(rs.getString(2));
-					car.setModel(rs.getString(3));
-					car.setModelYear(rs.getString(4));
+					car.setId(rs.getInt(4));
+					car.setMake(rs.getString(1));
+					car.setModel(rs.getString(2));
+					car.setModelYear(rs.getString(3));
+					
 					
 					carList.add(car);
 				}
@@ -284,17 +267,17 @@ public class JDBCCarDAO implements CarDAO {
 		try{
 			try {
 				connection = datasource.getConnection();
-				if(connection.getAutoCommit())
-				     connection.setAutoCommit(false);
-
+				connection.setAutoCommit(false);
 				PreparedStatement selectStatement = connection.prepareStatement(selectQuery);
+				
 				selectStatement.setInt(1, id);
+				
 				ResultSet result = selectStatement.executeQuery();
 				
 				if(result.next()){
-					car.setId(result.getInt("id"));
-					car.setMake(result.getString("make"));
-					car.setModel(result.getString("model"));
+					car.setId(result.getInt("ID"));
+					car.setMake(result.getString("MAKE"));
+					car.setModel(result.getString("MODEL"));
 					car.setModelYear(result.getString("MODEL_YEAR"));
 				}
 			} 

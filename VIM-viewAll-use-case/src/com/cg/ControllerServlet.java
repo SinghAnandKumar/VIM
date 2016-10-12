@@ -85,20 +85,15 @@ public class ControllerServlet extends HttpServlet
         	request.setAttribute("carList", carList);
 			//Set the destination page to carList.jsp
 			destinationPage = "carList.jsp";
-			
-			System.out.println("in view car list");
         	
         }
         else if(ADD_CAR_ACTION.equals(actionName))
         {
 			//TODO 5 
 			//Create a new CarDTO and set in request with attribute name as 'car'
-        	CarDTO car = new CarDTO();
-        	request.setAttribute("car", car);
+        	request.setAttribute("car", new CarDTO());
 			//Set the destination page to carForm.jsp
         	destinationPage="carForm.jsp";
-        	
-        	System.out.println("in add car");
             
         }  
         else if(EDIT_CAR_ACTION.equals(actionName))
@@ -109,26 +104,43 @@ public class ControllerServlet extends HttpServlet
         	int id = Integer.parseInt(request.getParameter("id"));
 			//Find the respective car (CarDTO) from carDAO using appropriate API of DAO
 			//Set the found car in request with name as 'car'
+        	
         	request.setAttribute("car", carDAO.findById(id));
 			//Set the destination page to carForm.jsp
         	destinationPage="carForm.jsp";
             
-        	System.out.println("in edit car");
         }        
         else if(SAVE_CAR_ACTION.equals(actionName))
         {
 			//TODO 7 
 			//Create a new CarDTO
         	CarDTO car = null;
-        	int id;
+        	int id = -1;
 			//set the properties of the DTO from request parameters
-        	id = Integer.parseInt(request.getParameter("id"));
+        	
+        	System.out.println("id = "+request.getParameter("id"));
+        	
+        	if(!request.getParameter("id").equals("null") || !request.getParameter("id").equals("-1"))
+        		id = Integer.parseInt(request.getParameter("id"));
+        	
 			//If it is a new car then invoke create api of DAO else update api
-        	car = carDAO.findById(id);
-        	if(car==null || id<0){
+        	
+        	if(id==-1){
         		car = new CarDTO();
+        		
+        		car.setMake(request.getParameter("make"));
+        		car.setModel(request.getParameter("model"));
+        		car.setModelYear(request.getParameter("modelYear"));
+        		
         		carDAO.create(car);
+        		
         	}else{
+        		car = carDAO.findById(id);
+        		
+        		car.setMake(request.getParameter("make"));
+        		car.setModel(request.getParameter("model"));
+        		car.setModelYear(request.getParameter("modelYear"));
+        		
         		carDAO.update(car);
         	}
         	
@@ -140,15 +152,13 @@ public class ControllerServlet extends HttpServlet
 			
         	//Set the destination page to carList.jsp
         	destinationPage="carList.jsp";
-        	
-        	System.out.println("in save car");
             
         }  
         else if(DELETE_CAR_ACTION.equals(actionName))
         {
             //TODO 8 
 			//Get the ids of all cars to be deleted from request
-        	String ids[] = request.getParameterValues("ids");
+        	String ids[] = request.getParameterValues("id");
 			
         	//Use appropriate api of DAO to delete all cars
         	carDAO.delete(ids);
@@ -162,7 +172,6 @@ public class ControllerServlet extends HttpServlet
 			//Set the destination page to carList.jsp
         	destinationPage="carList.jsp";
             
-        	System.out.println("in delete car");
         }                    
         else
         {
