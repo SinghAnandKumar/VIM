@@ -14,7 +14,7 @@
 <img src="ford-figo-2.jpg"/>
 </p>
 	
-    <a href="controller?action=viewCarList"  >View Inventory</a><%-- Set the value for 'action' parameter to 'viewCarList' --%>
+    <a href="controller?action=viewCarList<%-- Set the value for 'action' parameter to 'viewCarList' --%>"  >View Inventory</a>
     
   </body>
 </html>
